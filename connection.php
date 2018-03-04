@@ -1,7 +1,19 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: inilotic
- * Date: 04.03.2018
- * Time: 19:37
- */
+
+require 'vendor/autoload.php';
+use Illuminate\Database\Capsule\Manager as Capsule;
+
+$capsule = new Capsule();
+
+$capsule->addConnection([
+
+    "driver"     => "mysql",
+    "host"       => "localhost",
+    "database"   => "testapi",
+    "username"   => "root",
+    "password"   => "",
+    "charset"    => "utf8",
+    "collation"  => "utf8_general_ci"
+]);
+
+$capsule->bootEloquent();

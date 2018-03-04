@@ -1,8 +1,13 @@
 <?php
 
-use Pimple\ServiceProviderInterface;
+namespace Todos\Providers;
 
-class EloquentProvider implements ServiceProviderInterface
+use Pimple\ServiceProviderInterface;
+use Illuminate\Database\Capsule\Manager as Capsule;
+use Silex\Api\BootableProviderInterface;
+use Silex\Application;
+
+class EloquentProvider implements ServiceProviderInterface, BootableProviderInterface
 {
 
     /**
@@ -15,11 +20,47 @@ class EloquentProvider implements ServiceProviderInterface
      */
     public function register(\Pimple\Container $app)
     {
-        $app['db'] = $app->protect(function ($name) use ($app) {
-            $default = $app['hello.default_name'] ? $app['hello.default_name'] : '';
-            $name = $name ?: $default;
+        $app['db'] = new Capsule();
+    }
 
-            return 'Hello '.$app->escape($name);
-        });
+    /**
+     * Bootstraps the application.
+     *
+     * This method is called after all services are registered
+     * and should be used for "dynamic" configuration (whenever
+     * a service must be requested).
+     *
+     * @param Application $app
+     */
+    public function boot(Application $app)
+    {
+        if (!isset($app['dbs.options'])) {
+            return;
+        }
+        foreach ($app['dbs.options'] as $cn => $cdata) {
+            if (strtolower($cn) === 'mysql_read') {
+                $app['db']->addConnection([
+                    "driver" => $cdata['driver'],
+                    "host" => $cdata['host'],
+                    "database" => $cdata['dbname'],
+                    "username" => $cdata['user'],
+                    "password" => $cdata['password'],
+                    "charset" => $cdata['charset']
+                ]);
+            }
+
+            $app['db']->addConnection([
+                "driver" => $cdata['driver'],
+                "host" => $cdata['host'],
+                "database" => $cdata['dbname'],
+                "username" => $cdata['user'],
+                "password" => $cdata['password'],
+                "charset" => $cdata['charset']
+            ], $cn);
+
+        }
+
+        $app['db']->bootEloquent();
+
     }
 }

@@ -1,15 +1,13 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: inilotic
- * Date: 04.03.2018
- * Time: 19:39
- */
 
-namespace todos\models;
+namespace Todos\Models;
 
 
-class Message
+use Illuminate\Database\Eloquent\Model;
+
+class Message extends Model
 {
-
+        public function sender() {
+            return $this->hasOne(User::class, "id", "sender_id");
+        }
 }
