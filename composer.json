@@ -1,0 +1,24 @@
+{
+  "name": "inilotic/silexapi01",
+  "description": "api dev",
+  "authors": [
+    {
+      "name": "Igor Tomarov",
+      "email": "adm6909@ya.ru"
+    }
+  ],
+  "minimum-stability": "stable",
+  "autoload": {
+    "psr-4": {
+      "Todos\\": "src/todos"
+    }
+  },
+  "require": {
+    "silex/silex": "~2.0",
+    "illuminate/database": "5.2",
+    "symfony/validator": "*"
+  },
+  "require-dev": {
+    "symfony/var-dumper": "*"
+  }
+}
